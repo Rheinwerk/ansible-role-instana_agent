@@ -1,0 +1,111 @@
+# Manual a-priori configuration. Configuration will be only used when the sensor
+# is actually installed by the agent.
+# The commented out example values represent example configuration and are not
+# necessarily defaults. Defaults are usually 'absent' or mentioned separately.
+# Changes are hot reloaded unless otherwise mentioned.
+
+# It is possible to create files called 'configuration-abc.yaml' which are
+# merged with this file in file system order. So 'configuration-cde.yaml' comes
+# after 'configuration-abc.yaml'. Only nested structures are merged, values are
+# overwritten by subsequent configurations.
+
+# Secrets
+# To filter sensitive data from collection by the agent, all sensors respect
+# the following secrets configuration. If a key collected by a sensor matches
+# an entry from the list, the value is redacted.
+#com.instana.secrets:
+#  matcher: 'contains-ignore-case' # 'contains-ignore-case', 'contains', 'regex'
+#  list:
+#    - 'key'
+#    - 'password'
+#    - 'secret'
+
+# Host
+#com.instana.plugin.host:
+#  tags:
+#    - 'production'
+#    - 'app1'
+
+# Hardware & Zone
+#com.instana.plugin.generic.hardware:
+#  enabled: true # disabled by default
+#  availability-zone: 'Datacenter A / Rack 42'
+
+# MongoDB
+#com.instana.plugin.mongodb:
+#  user: ''
+#  source: '' # database where the user is defined
+#  password: ''
+
+# Mssql
+#com.instana.plugin.mssql:
+#  user: ''
+#  password: ''
+
+# Mysql
+#com.instana.plugin.mysql:
+#  user: ''
+#  password: ''
+
+# MariaDB
+#com.instana.plugin.mariadb:
+#  user: ''
+#  password: ''
+
+# PostgreSQL
+#com.instana.plugin.postgresql:
+#  user: ''
+#  password: ''
+
+# Redis
+#com.instana.plugin.redis:
+#  password: ''
+#  Monitor certain values in Redis
+#  monitor:
+#    - db: 0 # db number - defaults to 0 if absent
+#      key: 'logstash' # key of value, given as string
+#      type: 'list-length' # metric type. Currently only supports 'list-length' 
+
+# RabbitMq
+#com.instana.plugin.rabbitmq:
+#  user: 'guest'
+#  password: 'guest'
+
+# Java & Custom JMX
+#com.instana.plugin.java:
+#  jmx:
+#    # JMX is NOT hot-reloaded and needs to be set before a JVM is discovered.
+#    # Supported attribute types are Number and Boolean
+#    # delta calculation is only supported for Number
+#    - object_name: 'java.lang:type=Compilation'
+#      metrics:
+#        - attributes: 'TotalCompilationTime'
+#          type: 'delta' # delta will report the change to the previous second
+#    - object_name: 'java.lang:type=ClassLoading'
+#      metrics:
+#        - attributes: 'LoadedClassCount'
+#          type: 'absolute' # absolute will report the value as-is
+
+# Java Tracing
+com.instana.plugin.javatrace:
+  instrumentation:
+#    # Lightweight Bytecode Instrumentation, enabled by default
+#    # Disabling currently requires an agent restart
+    enabled: true
+#    # To enable using the SDK, provide a list of packages that should be
+#    # scanned for SDK annotations. All subpackages are scanned, as it is a
+#    # starts-with prefix matching.
+#    # Scanning a large amount of classes slows down agent attach and requires
+#    # more CPU for parsing, therefore it is recommended to limit to packages
+#    # actually using SDK annotations.
+#    # By default no packages are scanned for SDK annotations.
+#    sdk:
+#      packages:
+#        - 'com.instana.backend'
+#        - 'com.instana.frontend'
+
+com.instana.plugin.openstack.nova:
+  enabled: false
+com.instana.plugin.openstack.ec2:
+  enabled: false
+

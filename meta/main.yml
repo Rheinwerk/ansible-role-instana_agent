@@ -1,0 +1,14 @@
+galaxy_info:
+  author: Daniel Schneller
+  description: Installs the Instana agent on Debian/Ubuntu
+  company: Rheinwerk
+  license: license (GPLv3)
+  min_ansible_version: 2.0
+  platforms:
+  - name: Ubuntu
+    versions:
+    - trusty
+  galaxy_tags:
+    - instana
+dependencies: []
+
