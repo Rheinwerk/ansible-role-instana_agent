@@ -56,7 +56,6 @@
   - name: Set Instana Agent ownership
     file: dest="{{ instana_dir }}/{{ instana_agent_dir }}" owner="{{ instana_user }}" group="{{ instana_group }}" recurse=yes state=directory
     notify: Restart Instana Agent
-  when: downloaded_instana|changed or instana_force_install
   become: yes
 
 - name: Install service script
