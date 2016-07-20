@@ -1,6 +1,5 @@
 ---
 - hosts: localhost
   connection: local
-  become: yes
   roles:
     - ansible-role-instana_agent

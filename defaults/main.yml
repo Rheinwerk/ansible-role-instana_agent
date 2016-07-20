@@ -6,7 +6,7 @@ _instana:
   url: "https://www.dropbox.com/s/dsa9w41g1jutv74/instana-agent_no-license_20160713.tgz?dl=1"
   version: 20160713
   java_home: "/usr/java/default"
-  local_cache_dir: /var/cache/rheinwerk/instana_agent
+  local_cache_dir: ~/rheinwerk/cache/instana_agent
   user: "root"
   group: "root"
   access_key: "none"

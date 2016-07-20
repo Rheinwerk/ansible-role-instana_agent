@@ -3,65 +3,81 @@
 # tasks file for ansible-role-instana_agent
 #
 
+- name: Apt Update
+  become: yes
+  apt: update_cache=yes
+  when: RW_APT_CACHE_UPDATE is defined
+
+- name: Install rsync
+  become: yes
+  apt: pkg=rsync state=installed
+
+- set_fact:
+    instana_dir: "{{ _instana.install_dir|default('/opt/instana') }}"
+    instana_agent_dir: "instana-agent"
+    instana_tgz: "instana-agent-{{ _instana.version }}.tgz"
+    instana_user: "{{ _instana.user|default('root') }}"
+    instana_group: "{{ _instana.group|default('root') }}"
+    instana_version_cache: "{{ _instana.local_cache_dir }}/{{ _instana.version }}"
+    instana_force_install: "{{ RW_ENABLE_DOWNLOADS|default('no')}}"
+- name: Create local cache dir
+  file: dest="{{ instana_version_cache }}" state=directory mode=0755
+  delegate_to: localhost
+  run_once: True
+
 - block:
-    - name: Create local cache dir
-      file: dest="{{ _instana.local_cache_dir }}" state=directory owner=root group=root mode=0755
-      delegate_to: localhost
-      run_once: True
-
+  - name: Download Instana Agent
+    get_url: url="{{ _instana.url }}" dest="{{ instana_version_cache }}/{{ instana_tgz }}" force="{{ instana_force_install }}"
+    register: downloaded_instana
+  - block:
+    - name: Create Temp Unpack Dir
+      command: mktemp -d
+      register: tmp_unpack_dir_reg
     - set_fact:
-        agent_dir: "instana-agent"
-        instana_dir: "{{ _instana.install_dir|default('/opt/instana') }}"
-        instana_tgz: "instana-agent-{{ _instana.version }}.tgz"
-        instana_user: "{{ _instana.user|default('root') }}"
-        instana_group: "{{ _instana.group|default('root') }}"
+        tmp_unpack_dir: "{{ tmp_unpack_dir_reg.stdout }}"
+    - name: Unzip Agent
+      command: tar xzf "{{ instana_version_cache }}/{{ instana_tgz }}" -C "{{ tmp_unpack_dir }}"
+    - name: Remove old cached version
+      file: dest="{{ instana_version_cache }}/{{ instana_agent_dir }}" state=absent
+    - name: Update local cache
+      command: mv "{{ tmp_unpack_dir }}/{{ instana_agent_dir }}" "{{ instana_version_cache }}/"
+    when: downloaded_instana|changed or instana_force_install
+    always:
+      - name: Delete Temp Download Directory
+        file: path={{ tmp_unpack_dir }} state=absent
+        when: tmp_unpack_dir is defined and RW_DEBUG is not defined
+  run_once: yes
+  delegate_to: localhost
 
-    - block:
-      - name: Download Instana Agent
-        get_url: url="{{ _instana.url }}" dest="{{ _instana.local_cache_dir }}/{{ instana_tgz }}" force="{{ RW_ENABLE_DOWNLOADS|default('no')}}"
-        register: downloaded_instana
-      - block:
-        - name: Create Temp Unpack Dir
-          command: mktemp -d
-          register: tmp_unpack_dir_reg
-        - set_fact:
-            tmp_unpack_dir: "{{ tmp_unpack_dir_reg.stdout }}"
-        - name: Unzip Agent
-          unarchive: src="{{ _instana.local_cache_dir }}/{{ instana_tgz }}" dest="{{ tmp_unpack_dir }}" copy=no
-        - name: Update local cache
-          shell: mv "{{ tmp_unpack_dir }}/{{ agent_dir }}" "{{ _instana.local_cache_dir }}/{{ agent_dir }}"
-        when: downloaded_instana|changed
-      run_once: yes
-      delegate_to: localhost
-      always:
-        - name: Delete Temp Download Directory
-          file: path={{ tmp_unpack_dir }} state=absent
-          when: tmp_unpack_dir is defined and RW_DEBUG is not defined
+- block:
+  - name: Install Instana Agent
+    synchronize: src="{{ instana_version_cache }}/{{ instana_agent_dir }}" dest="{{ instana_dir }}/" delete=yes
+    notify: Restart Instana Agent
+  - name: Set Instana Agent ownership
+    file: dest="{{ instana_dir }}/{{ instana_agent_dir }}" owner="{{ instana_user }}" group="{{ instana_group }}" recurse=yes state=directory
+    notify: Restart Instana Agent
+  when: downloaded_instana|changed or instana_force_install
+  become: yes
 
-    - block:
-      - name: Install Instana Agent
-        synchronize: src="{{ _instana.local_cache_dir }}/{{ agent_dir }}" dest="{{ instana_dir }}/" delete=yes
-        notify: Restart Instana Agent
-      - name: Set Instana Agent ownership
-        file: dest="{{ instana_dir }}/{{ agent_dir }}" owner="{{ instana_user }}" group="{{ instana_group }}" recurse=yes state=directory
-        notify: Restart Instana Agent
-      when: downloaded_instana|changed
+- name: Install service script
+  become: yes
+  copy: src="etc/init.d/instana-agent" dest="/etc/init.d/instana-agent" owner="root" group="root" mode=0755
+  notify: Restart Instana Agent
 
-    - name: Install service script
-      copy: src="etc/init.d/instana-agent" dest="/etc/init.d/instana-agent" owner="root" group="root" mode=0755
-      notify: Restart Instana Agent
+- name: Generate /etc/defaults/instana-agent
+  become: yes
+  template: src="etc/default/instana-agent.j2" dest="/etc/default/instana-agent" owner="{{ instana_user }}" group="{{ instana_group }}" mode=0644
+  notify: Restart Instana Agent
 
-    - name: Generate /etc/defaults/instana-agent
-      template: src="etc/default/instana-agent.j2" dest="/etc/default/instana-agent" owner="{{ instana_user }}" group="{{ instana_group }}" mode=0644
-      notify: Restart Instana Agent
+- name: Generate Instana Agent Configuration
+  become: yes
+  template: src="configuration.yaml.j2" dest="{{ instana_dir }}/{{ instana_agent_dir }}/etc/instana/configuration.yaml" owner="{{ instana_user }}" group="{{ instana_group }}" mode=0644
+  notify: Restart Instana Agent
 
-    - name: Generate Instana Agent Configuration
-      template: src="configuration.yaml.j2" dest="{{ instana_dir }}/{{ agent_dir }}/etc/instana/configuration.yaml" owner="{{ instana_user }}" group="{{ instana_group }}" mode=0644
-      notify: Restart Instana Agent
-
-    - name: Install Instana Access Key
-      lineinfile: name="{{ instana_dir }}/{{ agent_dir }}/etc/instana/com.instana.agent.main.sender.Backend.cfg" line="key={{ _instana.access_key }}" regexp="^key="
-      notify: Restart Instana Agent
-      when: _instana.access_key is defined
+- name: Install Instana Access Key
+  become: yes
+  lineinfile: name="{{ instana_dir }}/{{ instana_agent_dir }}/etc/instana/com.instana.agent.main.sender.Backend.cfg" line="key={{ _instana.access_key }}" regexp="^key="
+  notify: Restart Instana Agent
+  when: _instana.access_key is defined
 
 # vim: set ft=ansible:set noet:ts=2:ws=2:
