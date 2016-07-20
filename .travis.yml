@@ -24,10 +24,6 @@ install:
 
 script:
   # Basic role syntax check
-  - find /usr/lib/jvm
-  - echo $JAVA_HOME
-  - jdk_switcher use oraclejdk8
-  - find $JAVA_HOME
   - ansible-playbook tests/test.yml -i tests/inventory --syntax-check
   - cd tests; ./run_tests.sh
 
