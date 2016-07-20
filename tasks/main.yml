@@ -64,7 +64,7 @@
   copy: src="etc/init.d/instana-agent" dest="/etc/init.d/instana-agent" owner="root" group="root" mode=0755
   notify: Restart Instana Agent
 
-- name: Generate /etc/defaults/instana-agent
+- name: Generate /etc/default/instana-agent
   become: yes
   template: src="etc/default/instana-agent.j2" dest="/etc/default/instana-agent" owner="{{ instana_user }}" group="{{ instana_group }}" mode=0644
   notify: Restart Instana Agent
