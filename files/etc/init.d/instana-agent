@@ -137,6 +137,7 @@ case "$1" in
     if [ $launched -eq 0 ]; then
         log_warning_msg "$DESC hasn't started within the timeout allowed"
         log_warning_msg "please review file \"$INSTANA_AGENT_LOG\" to see the status of the service"
+        exit 1
     fi
  ;;
  stop)
