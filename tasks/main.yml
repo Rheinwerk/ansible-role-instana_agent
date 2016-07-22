@@ -68,9 +68,9 @@
   template: src="etc/default/instana-agent.j2" dest="/etc/default/instana-agent" owner="{{ instana_user }}" group="{{ instana_group }}" mode=0644
   notify: Restart Instana Agent
 
-- name: Generate Instana Agent Configuration
+- name: Generate Instana Agent Override Configuration
   become: yes
-  template: src="configuration.yaml.j2" dest="{{ instana_dir }}/{{ instana_agent_dir }}/etc/instana/configuration.yaml" owner="{{ instana_user }}" group="{{ instana_group }}" mode=0644
+  template: src="configuration.yaml.j2" dest="{{ instana_dir }}/{{ instana_agent_dir }}/etc/instana/configuration-aaa.yaml" owner="{{ instana_user }}" group="{{ instana_group }}" mode=0640
   notify: Restart Instana Agent
 
 - name: Install Instana Access Key

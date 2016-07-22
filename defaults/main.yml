@@ -10,3 +10,15 @@ _instana:
   user: "root"
   group: "root"
   access_key: "none"
+  config:
+    common: |+
+    per_host:
+      localhost: |+
+        com.instana.plugin.javatrace:
+          instrumentation:
+            enabled: false
+        com.instana.plugin.openstack.nova:
+          enabled: false
+        com.instana.plugin.openstack.ec2:
+          enabled: false
+
