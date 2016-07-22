@@ -9,9 +9,14 @@ _instana:
   local_cache_dir: ~/rheinwerk/cache/instana_agent
   user: "root"
   group: "root"
-  access_key: "none"
+  #  access_key: "none"
   config:
     common: |+
+    per_hostgroup:
+      group_1: |+
+        com.instana.plugin.host:
+          tags:
+            - 'demo'
     per_host:
       localhost: |+
         com.instana.plugin.javatrace:
