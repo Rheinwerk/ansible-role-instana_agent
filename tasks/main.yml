@@ -57,6 +57,7 @@
     file: dest="{{ instana_dir }}/{{ instana_agent_dir }}" owner="{{ instana_user }}" group="{{ instana_group }}" recurse=yes state=directory
     notify: Restart Instana Agent
   become: yes
+  when: RW_INSTANA_SKIP_INSTALL is not defined
 
 - name: Install service script
   become: yes
