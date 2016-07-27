@@ -24,6 +24,6 @@ _instana:
             enabled: false
         com.instana.plugin.openstack.nova:
           enabled: false
-        com.instana.plugin.openstack.ec2:
+        com.instana.plugin.ec2:
           enabled: false
 
