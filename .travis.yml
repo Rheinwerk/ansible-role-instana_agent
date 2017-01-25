@@ -13,7 +13,7 @@ install:
 script:
 - ansible-playbook tests/test.yml -i tests/inventory --syntax-check
 - cd tests; ./run_tests.sh
-- cat /opt/instana/instana-agent/data/log/instana-agent-console.log
+- cat /opt/instana/agent/data/log/instana-agent-console.log
 notifications:
   webhooks: https://galaxy.ansible.com/api/v1/notifications/
 env:

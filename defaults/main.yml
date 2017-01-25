@@ -11,7 +11,7 @@
 #         is not set.
 
 _instana:
-  enable: yes
+  enable: no
   install_environment:
     INSTANA_AGENT_KEY: "{{ S_INSTANA_AGENT_KEY }}"
     # INSTANA_AGENT_ENDPOINT:

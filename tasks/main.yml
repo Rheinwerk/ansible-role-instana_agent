@@ -3,7 +3,7 @@
 # tasks file for ansible-role-instana_agent
 #
 
-- name: Add Instana Repostiory Key
+- name: Add Instana Repository Key
   apt_key: url="https://packages.instana.io/Instana.gpg"
 
 - name: Add Instana Apt Repository
