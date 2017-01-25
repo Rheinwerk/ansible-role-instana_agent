@@ -1,31 +1,21 @@
----
 language: python
-python: "2.7"
-
-# Use the new container infrastructure
+python: '2.7'
 sudo: required
 dist: trusty
-
-# Install ansible
 addons:
   apt:
     packages:
-      - python-pip
-
+    - python-pip
 install:
-  # Install ansible
-  - pip install ansible
-
-    # Check ansible version
-  - ansible --version
-
-    # Create ansible.cfg with correct roles_path
-  - printf '[defaults]\nroles_path=../' >ansible.cfg
-
+- pip install ansible
+- ansible --version
+- printf '[defaults]\nroles_path=../' >ansible.cfg
 script:
-  # Basic role syntax check
-  - ansible-playbook tests/test.yml -i tests/inventory --syntax-check
-  - cd tests; ./run_tests.sh
-  - cat /opt/instana/instana-agent/data/log/instana-agent-console.log
+- ansible-playbook tests/test.yml -i tests/inventory --syntax-check
+- cd tests; ./run_tests.sh
+- cat /opt/instana/instana-agent/data/log/instana-agent-console.log
 notifications:
   webhooks: https://galaxy.ansible.com/api/v1/notifications/
+env:
+  global:
+    secure: ZYd+YLvoTnZ4Hrjlpf1nU5tSKkscajsiAFH8dcNQKqfo/5kHUbFKk8BcUokW7A4jyHUa1IZ2Yqix2oi/arY+bFAlfw/s5gew86CXtmcanoLlncqHTbOP5vX536Mk8d5Fo6yfgy12pEWsKZvrTV+NFEs1hpWJ58A0tNzd/pZOUNtw8DuwHbCeF/GGosR56+NwMolQIOqQPkljGw/9uyoy0thUuHGAHs5mhLZksz9xPrO9+z8QhVPf/YlhCWKlperktGzjS4w1Kjm8PT7er8+/6N35i8I/n5e2kwqRTxZ4m7rRqF+Vhk3R1tpDFiGhoys44Beht003ib3n5Kvmgkhrxu+qO0pE8d9iny1OjPFZMvWhrCY2SO3F/57x9HZhzuxOe2iYit0jQ0ftO+2BPAsVCyBLFr/gACbVTLDOLmX4dDp5onHFvso737WH9kDSSxKPayndN3GZdv+tnq5oS0Nax5OzhVw3WcKwuR304g4V8HoXZjNUHabZUnywYvf4Rphp6dH+RPsmFI2H8Ur+c7mA2HtN/g6UkIwR5aYYlImfjQqGQlbYUPWwk2T6NFROLlCbS7/0/+MaZAHuqHHXXKDCSLqleVCTDtjmZisYtjTMRKj7A3f05Hi79XUXddiT0iuERgATE4hFnCAA70zYgyANREufW3CpAXtkr6vyCJVIA1o=

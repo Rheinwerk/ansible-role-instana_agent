@@ -1,15 +1,26 @@
 ---
 # defaults file for ansible-role-instana_agent
+#
+# The variables defined in install_environment will
+# be set as environment values when installing the
+# Instana Agent package. They will be picked up by
+# the setup scripts contained therein.
+#
+# Notice: INSTANA_AGENT_KEY is always required.
+#         Setup of the APT repo will fail if it
+#         is not set.
 
 _instana:
   enable: yes
-  url: "https://www.dropbox.com/s/dsa9w41g1jutv74/instana-agent_no-license_20160713.tgz?dl=1"
-  version: 20160713
-  java_home: "/usr/lib/jvm/java-8-oracle"
-  local_cache_dir: ~/rheinwerk/cache/instana_agent
-  user: "root"
-  group: "root"
-  #  access_key: "none"
+  install_environment:
+    INSTANA_AGENT_KEY: "{{ S_INSTANA_AGENT_KEY }}"
+    # INSTANA_AGENT_ENDPOINT:
+    # INSTANA_AGENT_ENDPOINT_PORT:
+    # INSTANA_PROXY_HOST:
+    # INSTANA_PROXY_TYPE:
+    # INSTANA_PROXY_DNS:
+    # INSTANA_PROXY_USER:
+    # INSTANA_PROXY_PASSWORD:
   config:
     common: |+
     per_hostgroup:

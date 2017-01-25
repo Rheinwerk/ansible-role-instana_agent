@@ -9,23 +9,21 @@ Ubuntu.
 Requirements
 ------------
 
-The Instana Agent is a customer specific download, including a
-pre-packaged license key. You need to provide a download url for your
-agent in the `_instana` dictionary.
+The Instana Agent is a customer specific download. To download it, you
+need to include a license key. You can provide it in the `_instana`
+dictionary. See *Role Variables*.
 
 Role Variables
 --------------
 
 There is one main variable that drives this role: `_instana`. It is a map that contains all configuration and settings for this role.
-The access key and the location of `JAVA_HOME` can be overridden using role variables.
+The access key can be set using this variable.
 Please see `defaults/main.yml` for details.
 
 Dependencies
 ------------
 
-Instana requires a pre-installed Oracle JDK, version 8 or above.
-By default it is expected in `/usr/java/default`, but can be overridden.
-
+None. Instana brings a packaged Java Runtime.
 
 Example Playbook
 ----------------
@@ -39,7 +37,7 @@ Including an example of how to use your role (for instance, with variables passe
         INSTANA:
           ...
       roles:
-         - { role: instana_agent, tags: [ 'instana' ], _jdk: "{{ INSTANA }}" }
+         - { role: instana_agent, tags: [ 'instana' ], _instana: "{{ INSTANA }}" }
 
 License
 -------
