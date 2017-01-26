@@ -9,6 +9,11 @@
 # Notice: INSTANA_AGENT_KEY is always required.
 #         Setup of the APT repo will fail if it
 #         is not set.
+#         INSTANA_AGENT_ENDPOINT and
+#         INSTANA_AGENT_ENDPOINT_PORT are also
+#         required. Without them set, the installation
+#         will work, but you will have to edit the
+#         configuration file manually afterwards.
 
 _instana:
   enable: no
