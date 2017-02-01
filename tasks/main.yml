@@ -10,7 +10,7 @@
   apt_repository: repo="deb [arch=amd64] https://_:{{ _instana.install_environment.INSTANA_AGENT_KEY }}@packages.instana.io/agent generic main" state=present
 
 - name: Install Instana Agent
-  apt: name="instana-agent-full" state=present
+  apt: name="instana-agent-full" state=latest
   environment: "{{ _instana.install_environment }}"
 
 - name: Generate Instana Agent Override Configuration
