@@ -2,4 +2,3 @@
 - name: Restart Instana Agent
   become: yes
   service: name="instana-agent" state=restarted
-

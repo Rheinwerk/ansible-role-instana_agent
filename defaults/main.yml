@@ -43,4 +43,3 @@ _instana:
           enabled: false
         com.instana.plugin.ec2:
           enabled: false
-
