@@ -4,7 +4,7 @@ Instana Agent
 This role installs the [Instana](https://www.instana.com) Agent.
 Ubuntu.
 
-[![Build Status](https://travis-ci.org/Rheinwerk/ansible-role-instana_agent.svg?branch=master)](https://travis-ci.org/Rheinwerk/ansible-role-instana_agent)
+[![Build Status](https://github.com/Rheinwerk/ansible-role-instana_agent/actions/workflows/ci.yml/badge.svg)](https://github.com/Rheinwerk/ansible-role-instana_agent/actions/workflows/ci.yml)
 
 Requirements
 ------------
